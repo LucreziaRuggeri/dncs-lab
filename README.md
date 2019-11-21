@@ -171,12 +171,12 @@ The requirements don't give any specification about the addresses that have to b
 The table below shows a recap of the addresses used in each of the four networks:
 
 
-<div align="center"> NETWORK </div>|<div align="center"> NETWORK MASK</div>|<div align="center"> IP NEEDED</div>|<div align="center"> IP AVAILABLE </div>|<div align="center"> NETWORK ADDRESS</div>|<div align="center"> FIRST IP AVAILABLE </div>|<div align="center"> LAST IP AVAILABLE </div>|
-:-----:|:-----------:|:---------:|:----------:|:--------------:|:-------:|:------:|
-A|/23 – 255.255.254.0|487|510|192.168.0.0/23| 192.168.0.1|192.168.1.254|
-B|/24 – 255.255.255.0|165|254|192.168.2.0/24	|192.168.2.1|192.168.2.254|
-C|/25 – 255.255.255.128|95|126|192.168.3.0/25	  |192.168.3.1|192.168.3.126|
-D|/30 – 255.255.255.252|2|2|192.168.3.128/30 |192.168.3.129|192.168.3.130|
+| NETWORK | NETWORK MASK          | IP NEEDED | IP AVAILABLE | NETWORK ADDRESS  | FIRST IP AVAILABLE | LAST IP AVAILABLE |
+|---------|-----------------------|-----------|--------------|------------------|--------------------|-------------------|
+| A       | /23 – 255.255.254.0   | 487       | 510          | 192.168.0.0/23   | 192.168.0.1        | 192.168.1.254     |
+| B       | /24 – 255.255.255.0   | 165       | 254          | 192.168.2.0/24   | 192.168.2.1        | 192.168.2.254     |
+| C       | /25 – 255.255.255.128 | 95        | 126          | 192.168.3.0/25   | 192.168.3.1        | 192.168.3.126     |
+| D       | /30 – 255.255.255.252 | 2         | 2            | 192.168.3.128/30 | 192.168.3.129      | 192.168.3.130     |
 
 ### VLANs
 
@@ -186,47 +186,47 @@ On the other hand, hosts in network A and hosts in network B have been linked to
 
 The tag used are:
 
-<div align="center"> NETWORK </div>|<div align="center"> VLAN TAG </div>|
-:----------------------------------:|:-------------------------------------:|
-A|10|
-B|20|
+| NETWORK | VLAN TAG |
+|---------|----------|
+| A       | 10       |
+| B       | 20       |
 
 Here we show the interfaces of the **NETWORK A**:
 
-<div align="center"> INTERFACE </div>|<div align="center"> HOST </div>|<div align="center"> VLAN TAG </div>|<div align="center"> IP </div>|
-:------------------------------------:|:--------------------------------:|:-----------------------------------:|:-----------------------------:|
-enp0s8.10|router-1|10|192.168.0.1|
-enp0s8|host 1-a|None|192.168.0.2|
+| INTERFACE | HOST     | VLAN TAG | IP ADDRESS  |
+|-----------|----------|----------|-------------|
+| enp0s8.10 | router-1 | 10       | 192.168.0.1 |
+| enp0s8    | host 1-a | None     | 192.168.0.2 |
 
 Here we show the interfaces of the **NETWORK B**:
 
-<div align="center"> INTERFACE </div>|<div align="center"> HOST </div>|<div align="center"> VLAN TAG </div>|<div align="center"> IP </div>|
-:------------------------------------:|:--------------------------------:|:-----------------------------------:|:-----------------------------:|
-enp0s8.20|router-1|20|192.168.2.1|
-enp0s8|host 1-b|None|192.168.2.2|
+| INTERFACE | HOST     | VLAN TAG | IP ADDRESS  |
+|-----------|----------|----------|-------------|
+| enp0s8.20 | router-1 | 20       | 192.168.2.1 |
+| enp0s8    | host 1-b | None     | 192.168.2.2 |
 
 ## Network configuration
 
 We can recap how we configured our network in terms of **IP ADDRESSES AND VLANs**:
 
-<div align="center"> NETWORK </div>|<div align="center"> VLAN TAG </div>|<div align="center"> NETWORK ADDRESS </div>|
-:----------------------------------:|:-----------------------------------:|:------------------------------------------:|
-A|10|192.168.0.0/23|
-B|20|192.168.2.0/24|
-C|None|192.168.3.0/25|
-D|None|192.168.3.128/30|
+| NETWORK | VLAN TAG | NETWORK ADDRESS  |
+|---------|----------|------------------|
+| A       | 10       | 192.168.0.0/23   |
+| B       | 20       | 192.168.2.0/24   |
+| C       | None     | 192.168.3.0/25   |
+| D       | None     | 192.168.3.128/30 |
 
-<div align="center"> HOST </div>|<div align="center"> INTERFACE </div>|<div align="center"> VLAN TAG </div>| <div align="center"> IP ADDRESS </div>|<div align="center"> </div>|
-:------------------------------------:|:------------------------------------:|:------------------------------:|:-----------------------------------:|:---------------|
-router-1|enp0s8|--|--|Interface splitted with trunk link |
-  |enp0s8.10|10|192.168.0.1| |
-	|enp0s8.20|20|192.168.2.1| |
-	|enp0s9|NONE|192.168.3.129|Link to router-2|
-router-2|enp0s9|NONE|192.168.3.130|Link to router-1|
-	|enp0s8|NONE|192.168.3.1|Link to host-2-c|
-host 1-a|enp0s8|NONE|192.168.0.2|Link with access port on the switch|
-host 1-b|enp0s8|NONE|192.168.2.2|Link with access port on the switch|
-host 2-c|enp0s8|NONE|192.168.3.2|Link to router-2|
+| HOST     | INTERFACE | VLAN TAG | IP ADDRESS    |                                     |
+|----------|-----------|----------|---------------|-------------------------------------|
+| router-1 | enp0s8    | --       | --            | Interface splitted with trunk link  |
+|          | enp0s8.10 | 10       | 192.168.0.1   |                                     |
+|          | enp0s8.20 | 20       | 192.168.2.1   |                                     |
+|          | enp0s9    | None     | 192.168.3.129 | Link to router-2                    |
+| router-2 | enp0s9    | None     | 192.168.3.130 | Link to router-1                    |
+|          | enp0s8    | None     | 192.168.3.1   | Link to host 2-c                    |
+| host 1-a | enp0s8    | None     | 192.168.0.2   | Link with access port on the switch |
+| host 1-b | enp0s8    | None     | 192.168.2.2   | Link with access port on the switch |
+| host 2-c | enp0s8    | None     | 192.168.3.2   | Link to router-2                    |
 
 The command used to assign the IP addresses to each interface of each host is:  
 `ip add add *IP address* dev *interface*`  
@@ -260,11 +260,11 @@ The command used to add the static routes in each host is:
 The **SWITCH** has three ports, one connected to the router-1 and the other two connected with host 1-a and host 1-b.  
 Here we show the ports of the switch:  
 
-<div align="center"> PORT </div>|<div align="center"> TYPE </div>|<div align="center"> VLAN </div>|
-:----------------------------------:|:-------------------------------------:|:-------------------------------------:|
-enp0s8|trunk port|untagged|
-enp0s9|access port|10|
-enp0s10|access port|20|
+| PORT    | TYPE        | VLAN TAG |
+|---------|-------------|----------|
+| enp0s8  | trunk port  | untagged |
+| enp0s9  | access port | 10       |
+| enp0s10 | access port | 20       |
 
 ## Web server
 
@@ -284,14 +284,14 @@ With this command we created a docker container called website, accessible on po
 
 To test the reachability between the **NETWORKS** we can use the ping command. If we run it from within a host we can see if the connection with another host works.  
 
-<div align="center"> HOST </div>|<div align="center"> COMMAND </div>|<div align="center"> WHAT DOES</div>|
-:----------------------------------:|:-------------------------------------:|:-------------------------------------:|
-host 1-a|ping -c 4 192.168.2.2|**HOST 1-A** tries to connect with host **HOST 1-B** |
-host 1-a|ping -c 4 192.168.3.2|**HOST 1-A** tries to connect with host **HOST 2-C** |
-host 1-b|ping -c 4 192.168.0.2|**HOST 1-B** tries to connect with host **HOST 1-A** |
-host 1-b|ping -c 4 192.168.3.2|**HOST 1-B** tries to connect with host **HOST 2-C** |
-host 2-c|ping -c 4 192.168.0.2|**HOST 2-C** tries to connect with host **HOST 1-A** |
-host 2-c|ping -c 4 192.168.2.2|**HOST 2-C** tries to connect with host **HOST 1-B** |
+| HOST     | COMMAND               |                                                      |
+|----------|-----------------------|------------------------------------------------------|
+| host 1-a | ping -c 4 192.168.2.2 | **HOST 1-A** tries to connect with host **HOST 1-B** |
+| host 1-a | ping -c 4 192.168.3.2 | **HOST 1-A** tries to connect with host **HOST 2-C** |
+| host 1-b | ping -c 4 192.168.0.2 | **HOST 1-B** tries to connect with host **HOST 1-A** |
+| host 1-b | ping -c 4 192.168.3.2 | **HOST 1-B** tries to connect with host **HOST 2-C** |
+| host 2-c | ping -c 4 192.168.0.2 | **HOST 2-C** tries to connect with host **HOST 1-A** |
+| host 2-c | ping -c 4 192.168.2.2 | **HOST 2-C** tries to connect with host **HOST 1-B** |
 
 
 Running the command, the host will send a number of packets (set with -c option) and will wait for a response. If the host receives a response, it means the connection worked.  
@@ -313,7 +313,7 @@ In that case we tried to ping host 2-c from host 1-a. We can see that host 1-a r
 ### Web server
 
 To test the reachability of the **WEB-SERVER** on host 2-c we can run the curl command from within any host:  
-`curl 192.168.3.2`
+`curl 192.168.3.2`  
 Running the command, we should see the html page of the web-server:
 ```
 vagrant@host-b:~$ curl 192.168.3.2
