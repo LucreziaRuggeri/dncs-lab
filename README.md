@@ -1,52 +1,37 @@
 # DNCS-LAB
 
 This repository contains the Vagrant files required to run the virtual lab environment used in the DNCS course.
-```
 
+## Table of contents:
+- [Assignment](#assignment)
+- [Requirements](#requirements)
+- [Design Requirements](#design-requirements)
+- [How-to](#how-to)
+  - [Tasks](#tasks)
+- [Notes and References](#notes-and-references)
+- [Network Map](#network-map)
+- [Design](#design)
+  - [Subnetting](#subnetting)
+  - [IP addresses](#ip-addresses)
+  - [VLANs](#vlans)
+- [Network configuration](#network-configuration)
+- [Routing](#routing)
+- [Switching](#switching)
+- [Web server](#web-server)
+- [Testing](#testing)
+  - [Network](#network)
+  - [Web server](#web-server)
+- [Authors](#authors)
 
-        +-----------------------------------------------------+
-        |                                                     |
-        |                                                     |eth0
-        +--+--+                +------------+             +------------+
-        |     |                |            |             |            |
-        |     |            eth0|            |eth2     eth2|            |
-        |     +----------------+  router-1  +-------------+  router-2  |
-        |     |                |            |             |            |
-        |     |                |            |             |            |
-        |  M  |                +------------+             +------------+
-        |  A  |                      |eth1                       |eth1
-        |  N  |                      |                           |
-        |  A  |                      |                           |
-        |  G  |                      |                     +-----+----+
-        |  E  |                      |eth1                 |          |
-        |  M  |            +-------------------+           |          |
-        |  E  |        eth0|                   |           |  host-c  |
-        |  N  +------------+      SWITCH       |           |          |
-        |  T  |            |                   |           |          |
-        |     |            +-------------------+           +----------+
-        |  V  |               |eth2         |eth3                |eth0
-        |  A  |               |             |                    |
-        |  G  |               |             |                    |
-        |  R  |               |eth1         |eth1                |
-        |  A  |        +----------+     +----------+             |
-        |  N  |        |          |     |          |             |
-        |  T  |    eth0|          |     |          |             |
-        |     +--------+  host-a  |     |  host-b  |             |
-        |     |        |          |     |          |             |
-        |     |        |          |     |          |             |
-        ++-+--+        +----------+     +----------+             |
-        | |                              |eth0                   |
-        | |                              |                       |
-        | +------------------------------+                       |
-        |                                                        |
-        |                                                        |
-        +--------------------------------------------------------+
+## Assignment
 
+The assignment consists in a simple piece of design work that students have to carry out to satisfy the requirements described below.
+The assignment deliverable consists of a Github repository containing:
+- the code necessary for the infrastructure to be replicated and instantiated
+- an updated README.md file where design decisions and experimental results are illustrated
+- an updated answers.yml file containing the details of
 
-
-```
-
-# Requirements
+## Requirements
  - Python 3
  - 10GB disk storage
  - 2GB free RAM
@@ -54,7 +39,15 @@ This repository contains the Vagrant files required to run the virtual lab envir
  - Vagrant (https://www.vagrantup.com)
  - Internet
 
-# How-to
+## Design Requirements
+- Hosts 1-a and 1-b are in two subnets (*Hosts-A* and *Hosts-B*) that must be able to scale up to respectively 486 and 164 usable addresses
+- Host 2-c is in a subnet (*Hub*) that needs to accommodate up to 94 usable addresses
+- Host 2-c must run a docker image (dustnic82/nginx-test) which implements a web-server that must be reachable from Host-1-a and Host-1-b
+- No dynamic routing can be used
+- Routes must be as generic as possible
+- The lab setup must be portable and executed just by launching the `vagrant up` command
+
+## How-to
  - Install Virtualbox and Vagrant
  - Clone this repository
 `git clone https://github.com/dustnic/dncs-lab`
@@ -66,14 +59,15 @@ cd dncs-lab
 Once you launch the vagrant script, it may take a while for the entire topology to become available.
  - Verify the status of the 4 VMs
  ```
- [dncs-lab]$ vagrant status                                                                                                                                                                
-Current machine states:
+ [dncs-lab]$ vagrant status    
+ Current machine states:
 
-router                    running (virtualbox)
-switch                    running (virtualbox)
-host-a                    running (virtualbox)
-host-b                    running (virtualbox)
+ router                    running (virtualbox)
+ switch                    running (virtualbox)
+ host-a                    running (virtualbox)
+ host-b                    running (virtualbox)
 ```
+
 - Once all the VMs are running verify you can log into all of them:
 `vagrant ssh router`
 `vagrant ssh switch`
@@ -81,27 +75,11 @@ host-b                    running (virtualbox)
 `vagrant ssh host-b`
 `vagrant ssh host-c`
 
-# Assignment
-This section describes the assignment, its requirements and the tasks the student has to complete.
-The assignment consists in a simple piece of design work that students have to carry out to satisfy the requirements described below.
-The assignment deliverable consists of a Github repository containing:
-- the code necessary for the infrastructure to be replicated and instantiated
-- an updated README.md file where design decisions and experimental results are illustrated
-- an updated answers.yml file containing the details of 
-
-## Design Requirements
-- Hosts 1-a and 1-b are in two subnets (*Hosts-A* and *Hosts-B*) that must be able to scale up to respectively {{ HostsASubnetRequiredAddresses }} and {{ HostsBSubnetRequiredAddresses }} usable addresses
-- Host 2-c is in a subnet (*Hub*) that needs to accommodate up to {{ HubSubnetRequiredAddresses }} usable addresses
-- Host 2-c must run a docker image (dustnic82/nginx-test) which implements a web-server that must be reachable from Host-1-a and Host-1-b
-- No dynamic routing can be used
-- Routes must be as generic as possible
-- The lab setup must be portable and executed just by launching the `vagrant up` command
-
-## Tasks
+### Tasks
 - Fork the Github repository: https://github.com/dustnic/dncs-lab
 - Clone the repository
 - Run the initiator script (dncs-init). The script generates a custom `answers.yml` file and updates the Readme.md file with specific details automatically generated by the script itself.
-  This can be done just once in case the work is being carried out by a group of (<=2) engineers, using the name of the 'squad lead'. 
+  This can be done just once in case the work is being carried out by a group of (<=2) engineers, using the name of the 'squad lead'.
 - Implement the design by integrating the necessary commands into the VM startup scripts (create more if necessary)
 - Modify the Vagrantfile (if necessary)
 - Document the design by expanding this readme file
@@ -109,12 +87,263 @@ The assignment deliverable consists of a Github repository containing:
 - Commit the changes and push to your own repository
 - Notify the examiner that work is complete specifying the Github repository, First Name, Last Name and Matriculation number. This needs to happen at least 7 days prior an exam registration date.
 
-# Notes and References
+## Notes and References
 - https://rogerdudler.github.io/git-guide/
 - http://therandomsecurityguy.com/openvswitch-cheat-sheet/
 - https://www.cyberciti.biz/faq/howto-linux-configuring-default-route-with-ipcommand/
 - https://www.vagrantup.com/intro/getting-started/
 
+## Network map
 
-# Design
-[ Your work goes here ]
+The schema below represents the network map, in which all the IP addresses are specified.
+
+        +----------------------------------------------------------------------+
+        |                                                                      |
+        |                                                                      |enp0s3
+        +--+--+                  +------------+                          +------------+
+        |     |                  |            |                          |            |
+        |     |            enp0s3|            |enp0s9              enp0s9|            |
+        |     +------------------+  router-1  +--------------------------+  router-2  |
+        |     |                  |            |.129                  .130|            |
+        |     |                  |            |      192.168.3.128/30    |            |
+        |  M  |                  +------------+                          +------------+
+        |  A  |          192.168.0.1/23 |enp0s8.10                      enp0s8 |.1
+        |  N  |          192.168.2.1/24 |enp0s8.20                             |
+        |  A  |                         |                                      |                               
+        |  G  |                         |                                      |
+        |  E  |                         |                       192.168.3.0/25 |
+        |  M  |                         |                                      |
+        |  E  |                         |enp0s8                         enp0s8 |.2
+        |  N  |            +--------------------------+                  +-----+----+
+        |  T  |     enp0s3 |       TRUNK  PORT        |                  |          |
+        |     +------------+         SWITCH           |                  |          |
+        |     |            |  10                   20 |                  |  host-c  |
+        |     |            +--------------------------+                  |          |
+        |  V  |               |enp0s9              |enp0s10              |          |
+        |  A  |               |                    |                     +----------+
+        |  G  |               |                    |                           |enp0s3
+        |  R  |               | 192.168.0.2/23     |192.168.2.2/24             |
+        |  A  |               | enp0s8             |enp0s8                     |
+        |  N  |         +----------+           +----------+                    |
+        |  T  |         |          |           |          |                    |
+        |     |  enp0s3 |          |           |          |                    |
+        |     +---------+  host-a  |           |  host-b  |                    |
+        |     |         |          |           |          |                    |
+        |     |         |          |           |          |                    |
+        ++-+--+         +----------+           +----------+                    |
+        | |                                        |enp0s3                     |
+        | |                                        |                           |
+        | +----------------------------------------+                           |
+        |                                                                      |
+        |                                                                      |
+        +----------------------------------------------------------------------+
+
+
+## Design
+
+### Subnetting
+
+Given the design requirements we decided to split our network in the following four main **SUBNETS**:
+- **SUBNET A**: it includes Host 1-a + 485 hosts + router-1 port (enp0s8.10)
+-	**SUBNET B**: it includes Host 1-b + 163 hosts + router-1 port (enp0s8.20)
+-	**SUBNET C**: it includes Host 2-c + 93 hosts + router-2 port (enp0s8)
+-	**SUBNET D**: it includes router-1 port (enp0s9) + router-2 port (enp0s9)
+
+(We decided to keep the router interface address outside the number of addresses required)
+
+### IP addresses
+
+We have found out that there could be several approaches to assign the **IP ADDRESSES** to each of our subnets:
+- The first one is to use the subnetting rules in order to allocate to each subnet only the usable IP addresses that were specified in our requirements. However, even if this solution seems to be the best one to ensure the smallest loss of IP addresses (it had the best ratio of the total IP addresses used and all the ones available), we get to the conclusion that it could not be so easy to deal with. In fact, this kind of solution implies that if we need to scale up the subnet, because new hosts have to be connected and so new IP addresses need to be reserved, we have to change both the network masks and the routing rules and this could be an ineffective solution when dealing with real networks.
+- The second one is to assign to each subnet the smallest IP address class that could accommodate the number of hosts required for each of them.
+
+So, for this reason, we decided to follow the second approach:
+
+-	**SUBNET A**: **/23** network provides 510 addresses (2<sup>9</sup>-2)
+-	**SUBNET B**: **/24** network provides 254 addresses (2<sup>8</sup>-2)
+-	**SUBNET C**: **/25** network provides 126 addresses (2<sup>7</sup>-2)
+-	**SUBNET D**: **/30** network provides 2 addresses (2<sup>2</sup>-2)
+
+From the amount of IP address available we had to subtract two dedicated IP -one for broadcast and one for the network- that cannot be assigned to any host.
+
+The requirements don't give any specification about the addresses that have to be used, so we decided to use **PRIVATE IP ADDRESSES**. In particular, we choosed the 192.168.0.0/16 class of IP addresses (but we could also choose the 10.0.0.0/8 class or the 172.16.0.0/12).
+
+The table below shows a recap of the addresses used in each of the four networks:
+
+
+<div align="center"> NETWORK </div>|<div align="center"> NETWORK MASK</div>|<div align="center"> IP NEEDED</div>|<div align="center"> IP AVAILABLE </div>|<div align="center"> NETWORK ADDRESS</div>|<div align="center"> FIRST IP AVAILABLE </div>|<div align="center"> LAST IP AVAILABLE </div>|
+:-----:|:-----------:|:---------:|:----------:|:--------------:|:-------:|:------:|
+A|/23 – 255.255.254.0|487|510|192.168.0.0/23| 192.168.0.1|192.168.1.254|
+B|/24 – 255.255.255.0|165|254|192.168.2.0/24	|192.168.2.1|192.168.2.254|
+C|/25 – 255.255.255.128|95|126|192.168.3.0/25	  |192.168.3.1|192.168.3.126|
+D|/30 – 255.255.255.252|2|2|192.168.3.128/30 |192.168.3.129|192.168.3.130|
+
+### VLANs
+
+We supposed that was better to use **VLANs** for the portioning of the networks that host network **A** and netowrk **B**, because the network has only one connection between the router-1 and the switch. This approach allowed us to split the switch in two virtual switches and keep the VLANs separated in terms of broadcast area.  
+We used a trunk link to connect the router-1 to both LANs, in order to be able to simultaneously manage on the same interface the traffic coming from the two distinct VLANs.
+On the other hand, hosts in network A and hosts in network B have been linked to the switch with access ports: in that way, hosts in both network will never know that they are on the same physical switch.
+
+The tag used are:
+
+<div align="center"> NETWORK </div>|<div align="center"> VLAN TAG </div>|
+:----------------------------------:|:-------------------------------------:|
+A|10|
+B|20|
+
+Here we show the interfaces of the **NETWORK A**:
+
+<div align="center"> INTERFACE </div>|<div align="center"> HOST </div>|<div align="center"> VLAN TAG </div>|<div align="center"> IP </div>|
+:------------------------------------:|:--------------------------------:|:-----------------------------------:|:-----------------------------:|
+enp0s8.10|router-1|10|192.168.0.1|
+enp0s8|host 1-a|None|192.168.0.2|
+
+Here we show the interfaces of the **NETWORK B**:
+
+<div align="center"> INTERFACE </div>|<div align="center"> HOST </div>|<div align="center"> VLAN TAG </div>|<div align="center"> IP </div>|
+:------------------------------------:|:--------------------------------:|:-----------------------------------:|:-----------------------------:|
+enp0s8.20|router-1|20|192.168.2.1|
+enp0s8|host 1-b|None|192.168.2.2|
+
+## Network configuration
+
+We can recap how we configured our network in terms of **IP ADDRESSES AND VLANs**:
+
+<div align="center"> NETWORK </div>|<div align="center"> VLAN TAG </div>|<div align="center"> NETWORK ADDRESS </div>|
+:----------------------------------:|:-----------------------------------:|:------------------------------------------:|
+A|10|192.168.0.0/23|
+B|20|192.168.2.0/24|
+C|None|192.168.3.0/25|
+D|None|192.168.3.128/30|
+
+<div align="center"> HOST </div>|<div align="center"> INTERFACE </div>|<div align="center"> VLAN TAG </div>| <div align="center"> IP ADDRESS </div>|<div align="center"> </div>|
+:------------------------------------:|:------------------------------------:|:------------------------------:|:-----------------------------------:|:---------------|
+router-1|enp0s8|--|--|Interface splitted with trunk link |
+  |enp0s8.10|10|192.168.0.1| |
+	|enp0s8.20|20|192.168.2.1| |
+	|enp0s9|NONE|192.168.3.129|Link to router-2|
+router-2|enp0s9|NONE|192.168.3.130|Link to router-1|
+	|enp0s8|NONE|192.168.3.1|Link to host-2-c|
+host 1-a|enp0s8|NONE|192.168.0.2|Link with access port on the switch|
+host 1-b|enp0s8|NONE|192.168.2.2|Link with access port on the switch|
+host 2-c|enp0s8|NONE|192.168.3.2|Link to router-2|
+
+The command used to assign the IP addresses to each interface of each host is:  
+`ip add add *IP address* dev *interface*`  
+Once assigned the addresses, we had to bring each interface up. The command used is:  
+`ip link set *interface* up`
+
+In router-1 we also had to create two subinterfaces for the VLANs. It has be done with the command:  
+`ip link add link *interface* name *subinterface name* type vlan id *VLAN id*`  
+Done this we could assign IP addresses and bring the subinterfaces up as described above.
+
+## Routing
+
+According with the requirements given we used **STATIC ROUTING** to define the routing/forwarding tables. We configured static routes in each host of the network:  
+- **HOST 1-A** and **HOST 1-B**: in these two hosts we decided to define a default route to router-1 interfaces (enp0s8.10 for host 1-a and enp0s8.20 for host 1-b). To do so we:
+  - deleted the existing default route to the management interface  
+  `ip route del default`
+  - added the default route to respective router-1 interfaces  
+  `ip route add default via 192.168.0.1` for host 1-a  
+  `ip route add default via 192.168.2.1` for host 1-b  
+  In that way both the hosts send all the traffic which is not destined to their subnet to the interface of the default router (router-1). They can't directly connect to the management interface.  
+- **HOST 2-C**: in host 2-c we decided to add two static routes to reach subnet A and subnet B through router-2 (enp0s8 interface). We kept the management interface as default gateway because we need the internet access.
+- **ROUTER-1**: in router-1 we added a static route to reach subnet C through router-2 (enp0s9 interface) and kept the default router (management interface).
+- **ROUTER-2**:  in router-2 we added two static routes, one to subnet A and one to subnet B, both through router-1 (enp0s9 interface) and kept the default router (management interface).
+
+The command used to add the static routes in each host is:  
+`ip route add *subnet address/mask* via *gateway address* dev *interface*`
+
+
+## Switching
+
+The **SWITCH** has three ports, one connected to the router-1 and the other two connected with host 1-a and host 1-b.  
+Here we show the ports of the switch:  
+
+<div align="center"> PORT </div>|<div align="center"> TYPE </div>|<div align="center"> VLAN </div>|
+:----------------------------------:|:-------------------------------------:|:-------------------------------------:|
+enp0s8|trunk port|untagged|
+enp0s9|access port|10|
+enp0s10|access port|20|
+
+## Web server
+
+On the host 2-c we had to implement a **WEB SERVER** with a docker image.
+
+To do so we had first of all to pull the image required:  
+`docker pull dustnic82/nginx-test`  
+
+Then we had to run the image on a docker container:  
+`docker run --name website --restart=unless-stopped -p 80:80 -d dustnic82/nginx-test`  
+With this command we created a docker container called website, accessible on port 80, which runs the image pulled before (dustnic82/nginx-test). The container is set to run unless stopped.
+
+
+## Testing
+
+### Network
+
+To test the reachability between the **NETWORKS** we can use the ping command. If we run it from within a host we can see if the connection with another host works.  
+
+<div align="center"> HOST </div>|<div align="center"> COMMAND </div>|<div align="center"> WHAT DOES</div>|
+:----------------------------------:|:-------------------------------------:|:-------------------------------------:|
+host 1-a|ping -c 4 192.168.2.2|**HOST 1-A** tries to connect with host **HOST 1-B** |
+host 1-a|ping -c 4 192.168.3.2|**HOST 1-A** tries to connect with host **HOST 2-C** |
+host 1-b|ping -c 4 192.168.0.2|**HOST 1-B** tries to connect with host **HOST 1-A** |
+host 1-b|ping -c 4 192.168.3.2|**HOST 1-B** tries to connect with host **HOST 2-C** |
+host 2-c|ping -c 4 192.168.0.2|**HOST 2-C** tries to connect with host **HOST 1-A** |
+host 2-c|ping -c 4 192.168.2.2|**HOST 2-C** tries to connect with host **HOST 1-B** |
+
+
+Running the command, the host will send a number of packets (set with -c option) and will wait for a response. If the host receives a response, it means the connection worked.  
+The output of the ping command should be like:
+```
+vagrant@host-a:~$ ping -c 4 192.168.3.2
+PING 192.168.3.2 (192.168.3.2) 56(84) bytes of data.
+64 bytes from 192.168.3.2: icmp_seq=1 ttl=62 time=2.23 ms
+64 bytes from 192.168.3.2: icmp_seq=2 ttl=62 time=2.47 ms
+64 bytes from 192.168.3.2: icmp_seq=3 ttl=62 time=1.91 ms
+64 bytes from 192.168.3.2: icmp_seq=4 ttl=62 time=2.16 ms
+
+--- 192.168.3.2 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3006ms
+rtt min/avg/max/mdev = 1.916/2.195/2.474/0.206 ms
+```
+In that case we tried to ping host 2-c from host 1-a. We can see that host 1-a received 4 packets as response so we know the connection worked correctly.
+
+### Web server
+
+To test the reachability of the **WEB-SERVER** on host 2-c we can run the curl command from within any host:  
+`curl 192.168.3.2`
+Running the command, we should see the html page of the web-server:
+```
+vagrant@host-b:~$ curl 192.168.3.2
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+```
+This means that the host has downloaded the page.
+
+## Authors
+This project has been developed by **Lucrezia Ruggeri** and **Elisabetta Rossetti**, as assignment of the 'Design of Network and Communication Systems' course of University of Trento.

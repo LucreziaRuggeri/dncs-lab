@@ -1,0 +1,18 @@
+FirstName: Lucrezia, Elisabetta
+LastName: Ruggeri, Rossetti
+MatriculationNumber: 188617, 171255
+AcademicYear: 2019-2020
+GitHubUrl: https://github.com/LucreziaRuggeri/dncs-lab
+Subnets:
+  HostsA:
+    RequiredAddresses: 486
+    SubnetAddress: 192.168.0.0
+    SubnetPrefixLength: 23
+  HostsB:
+    RequiredAddresses: 164
+    SubnetAddress: 192.168.2.0
+    SubnetPrefixLength: 24
+  Hub:
+    RequiredAddresses: 94
+    SubnetAddress: 192.168.3.0
+    SubnetPrefixLength: 25
